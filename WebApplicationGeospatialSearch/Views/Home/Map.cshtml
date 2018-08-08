@@ -1,0 +1,292 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Map</title>
+
+
+    <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/css/atlas.min.css?api-version=1.0" type="text/css" />
+
+    <style type="text/css">
+        #map {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+        }
+
+        .ms-pin {
+            z-index: 9999999;
+            width: 50px;
+            height: 50px;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 100px 100px;
+            background-image: url('data:image/png;base64,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')
+        }
+
+        .property-pin {
+            width: 30px;
+            height: 30px;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCA1MDIgNTAyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MDIgNTAyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PGc+PGc+PHBhdGggc3R5bGU9ImZpbGw6I0RCNDk0OTsiIGQ9Ik00NTYuNSwzNjFsLTEwLTYySDM0MC4zMDJjMjQuMzctNDUuNjE2LDQyLjQ5OS04OS44MTIsNDIuNDk5LTEyMC4zNUMzODIuOCw4NS41MDcsMzA3LjI5MywxMCwyMTQuMTUsMTBTNDUuNSw4NS41MDcsNDUuNSwxNzguNjVDNDUuNSwyNzEuNzkzLDIxNC4xNSw0OTIsMjE0LjE1LDQ5MnMzMy4zMjctNDMuNTE3LDcwLjM1LTEwMC4wNFYzNjFINDU2LjV6Ii8+PHJlY3QgeD0iMjg0LjUiIHk9IjM2MSIgc3R5bGU9ImZpbGw6I0U2RTZFNjsiIHdpZHRoPSIxNzIiIGhlaWdodD0iMTI5Ii8+PC9nPjxjaXJjbGUgc3R5bGU9ImZpbGw6I0U2RTZFNjsiIGN4PSIyMTQuMTUiIGN5PSIxNzguNjUiIHI9Ijk0LjgwMyIvPjxnPjxyZWN0IHg9IjM0My41IiB5PSI0MDIiIHN0eWxlPSJmaWxsOiNEQjQ5NDk7IiB3aWR0aD0iNTQiIGhlaWdodD0iODgiLz48Zz48cGF0aCBkPSJNMzE4Ljk1NCwxNzguNjVjMC01Ny43ODktNDcuMDE1LTEwNC44MDMtMTA0LjgwNC0xMDQuODAzYy01Ny43ODksMC0xMDQuODAzLDQ3LjAxNS0xMDQuODAzLDEwNC44MDNjMCw1Ny43ODksNDcuMDE1LDEwNC44MDQsMTA0LjgwMywxMDQuODA0QzI3MS45MzksMjgzLjQ1NCwzMTguOTU0LDIzNi40MzksMzE4Ljk1NCwxNzguNjV6IE0yMTQuMTUsMjYzLjQ1NGMtNDYuNzYxLDAtODQuODAzLTM4LjA0My04NC44MDMtODQuODA0czM4LjA0Mi04NC44MDMsODQuODAzLTg0LjgwM3M4NC44MDQsMzguMDQyLDg0LjgwNCw4NC44MDNTMjYwLjkxMSwyNjMuNDU0LDIxNC4xNSwyNjMuNDU0eiIvPjxwYXRoIGQ9Ik0xMjUuMTUzLDkwLjA4MWMyLjM5LDAsNC43ODgtMC44NTIsNi43MDEtMi41OGMyMi41OTMtMjAuNDEyLDUxLjgxOS0zMS42NTQsODIuMjk2LTMxLjY1NGMxNy4wMzgsMCwzMy41MjUsMy40Miw0OS4wMDYsMTAuMTY1YzUuMDYzLDIuMjA2LDEwLjk1Ny0wLjExLDEzLjE2Mi01LjE3M2MyLjIwNi01LjA2My0wLjExLTEwLjk1Ni01LjE3My0xMy4xNjJjLTE4LjAxNi03Ljg1LTM3LjE5Mi0xMS44My01Ni45OTUtMTEuODNjLTM1LjQ0LDAtNjkuNDI4LDEzLjA3NC05NS43MDQsMzYuODE0Yy00LjA5OCwzLjcwMi00LjQxOCwxMC4wMjYtMC43MTYsMTQuMTI0QzExOS43MDQsODguOTcsMTIyLjQyMyw5MC4wODEsMTI1LjE1Myw5MC4wODF6Ii8+PHBhdGggZD0iTTEwMS4xNDMsMTA4LjE0NmMtNC44ODktMi41NjctMTAuOTM1LTAuNjg1LTEzLjUwMiw0LjIwNWMtMTAuNjU5LDIwLjMtMTYuMjkzLDQzLjIyNi0xNi4yOTMsNjYuMjk5YzAsNS41MjMsNC40NzcsMTAsMTAsMTBzMTAtNC40NzcsMTAtMTBjMC0xOS44NDcsNC44NDEtMzkuNTU4LDE0LTU3LjAwMUMxMDcuOTE1LDExNi43NTksMTA2LjAzMiwxMTAuNzEzLDEwMS4xNDMsMTA4LjE0NnoiLz48cGF0aCBkPSJNNDU2LjUsNTAwYzUuNTIzLDAsMTAtNC40NzcsMTAtMTBWMzYxYzAtMC4wOTEtMC4wMTEtMC4xNzgtMC4wMTQtMC4yNjhjLTAuMDEyLTAuNDM2LTAuMDQ0LTAuODkyLTAuMTE0LTEuMzI0bC0xMC02MmMtMC43ODItNC44NDYtNC45NjQtOC40MDgtOS44NzMtOC40MDhoLTg5LjcyMmMyMy45MDUtNDcuMTgzLDM2LjAyMi04NC4yNywzNi4wMjItMTEwLjM1QzM5Mi44LDgwLjE0MiwzMTIuNjU4LDAsMjE0LjE1LDBDMTE1LjY0MiwwLDM1LjUsODAuMTQyLDM1LjUsMTc4LjY1YzAsOTUuNDM1LDE2My43NCwzMTAuMzI5LDE3MC43MTEsMzE5LjQzMWMxLjg5MiwyLjQ3MSw0LjgyNywzLjkxOSw3LjkzOSwzLjkxOXM2LjA0Ny0xLjQ0OSw3LjkzOS0zLjkxOWMwLjI3NS0wLjM1OSwyMy40OTQtMzAuNzQsNTIuNDExLTczLjE2N1Y0OTBjMCw1LjUyMyw0LjQ3NywxMCwxMCwxMEg0NTYuNXogTTQ0NC43NTgsMzUxSDI5Ni4yNDJsNi43NzQtNDJoMTM0Ljk2OEw0NDQuNzU4LDM1MXogTTIxNC4xNSw0NzUuMzMzYy0xNC4xNzItMTkuMTEyLTQ1LjIyMi02MS45MjgtNzUuOTUtMTEwLjU0NUM4NC4wOTcsMjc5LjE4Nyw1NS41LDIxNC44MjEsNTUuNSwxNzguNjVDNTUuNSw5MS4xNywxMjYuNjcsMjAsMjE0LjE1LDIwUzM3Mi44LDkxLjE3LDM3Mi44LDE3OC42NWMwLDI0LjUxOS0xMi45NjQsNjEuNjM4LTM4LjUyMiwxMTAuMzVIMjk0LjVjLTQuOTA4LDAtOS4wOTEsMy41NjItOS44NzMsOC40MDhsLTEwLDYyYy0wLjA4NCwwLjUxOS0wLjEyNywxLjA2Ni0wLjEyNywxLjU5MnYyNy45NzNDMjQ5LjM1Miw0MjcuMjIsMjI1LjkyOCw0NTkuNDU0LDIxNC4xNSw0NzUuMzMzeiBNMzUzLjUsNDgwdi02OGgzNHY2OEgzNTMuNXogTTQ0Ni41LDQ4MGgtMzl2LTc4YzAtNS41MjMtNC40NzctMTAtMTAtMTBoLTU0Yy01LjUyMywwLTEwLDQuNDc3LTEwLDEwdjc4aC0zOVYzNzFoMTUyVjQ4MHoiLz48L2c+PC9nPjwvZz48Zz48L2c+PGc+PC9nPjxnPjwvZz48Zz48L2c+PGc+PC9nPjxnPjwvZz48Zz48L2c+PGc+PC9nPjxnPjwvZz48Zz48L2c+PGc+PC9nPjxnPjwvZz48Zz48L2c+PGc+PC9nPjxnPjwvZz48L3N2Zz4=);
+        }
+
+        .zoom {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            color: #231f20;
+            box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);
+            user-select: none;
+            background-color: #fff;
+        }
+
+        #zoom-plus {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        #zoom-minus {
+            position: absolute;
+            top: 60px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body onload="app.init();">
+
+    <div id="map"></div>
+
+    <script src="~/js/anime.min.js"></script>
+    <script src="https://atlas.microsoft.com/sdk/js/atlas.min.js?api-version=1.0" type="text/javascript"></script>
+    <script type="text/javascript">
+
+
+        var app = (function () {
+
+            var mapAccountKey = 'hw8Fx2Dv7wIWYbc7NDWsnwbWeGs6SKDimGAh6rFHCk0';
+
+            var map = undefined;
+            var id = 0;
+            var centerPinStartDrag = false;
+            var centerLocation = {
+                latitude: 19.432608,
+                longitude: -99.133209
+            };
+            var lastLocation = {
+                latitude: 19.432608,
+                longitude: -99.133209
+            };
+
+            var lastProperties = []
+
+            var getComputedTranslateXY = function (obj) {
+                var transArr = [];
+
+                if (!window.getComputedStyle)
+                    return;
+
+                var style = getComputedStyle(obj),
+                    transform = style.transform || style.webkitTransform || style.mozTransform;
+
+                var mat = transform.match(/^matrix3d\((.+)\)$/);
+
+                if (mat)
+                    return parseFloat(mat[1].split(', ')[13]);
+
+                mat = transform.match(/^matrix\((.+)\)$/);
+                mat ? transArr.push(parseFloat(mat[1].split(', ')[4])) : 0;
+                mat ? transArr.push(parseFloat(mat[1].split(', ')[5])) : 0;
+
+                return transArr;
+            }
+
+            var addCenterPin = function (latitude, longitude) {
+                var centerPin = document.createElement('div');
+                centerPin.id = "ms-pin"
+                centerPin.classList.add("pin");
+                centerPin.classList.add("ms-pin");
+
+                centerPin.onmousedown = function () {
+                    centerPinStartDrag = true;
+                    map.setUserInteraction({ dragPanInteraction: false });
+                };
+
+                centerPin.onmouseup = function () {
+                    centerPinStartDrag = false;
+                    map.setUserInteraction({ dragPanInteraction: true });
+
+                    search();
+                };
+
+                var centerPinLocation = [longitude, latitude];
+
+                id = map.addHtml(centerPin, centerPinLocation);
+
+                var traslate = getComputedTranslateXY(centerPin);
+
+                anime({
+                    targets: '#ms-pin',
+                    translateY: [-100, traslate[1]],
+                    translateX: [traslate[0], traslate[0]],
+                    delay: 300,
+                    complete: function () {
+                        search();
+                    }
+                });
+            };
+
+            var getMap = function () {
+                return map;
+            };
+
+            var addPropertyPin = function (index, property) {
+                var propertyPin = document.createElement('div');
+                propertyPin.id = "property-pin-" + property.id;
+                propertyPin.classList.add("property-pin");
+
+                var popupContentElement = document.createElement("div");
+                popupContentElement.id = "property-popup-" + property.id;
+                popupContentElement.style.padding = "8px";
+                var popupNameElement = document.createElement("div");
+                popupNameElement.innerText = property.title;
+                popupContentElement.appendChild(popupNameElement);
+
+                var popup = new atlas.Popup({
+                    content: popupContentElement,
+                    position: property.location.coordinates,
+                    pixelOffset: [0, 0]
+                });
+
+                popup.attach(map);
+
+                propertyPin.onclick = function () {
+                    popup.open(map);
+                };
+
+                var propid = map.addHtml(propertyPin, property.location.coordinates);
+                lastProperties.push(propid);
+
+                var traslate = getComputedTranslateXY(propertyPin);
+
+                anime({
+                    targets: '#' + "property-pin-" + property.id,
+                    translateY: [-100, traslate[1]],
+                    translateX: [traslate[0], traslate[0]],
+                    delay: index * 10
+                });
+            };
+
+            var search = function () {
+
+                removeAllProperties(lastProperties.slice(0));
+
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        var response = JSON.parse(this.responseText);
+
+                        lastProperties = [];
+
+                        for (var x in response) {
+                            var property = response[x];
+
+                            addPropertyPin(x,property);
+                        }
+
+
+                    }
+                };
+
+                var url = '@Url.Action("SearchByLocation", "Search")?1=1';
+                url += "&latitude=" + lastLocation.latitude;
+                url += "&longitude=" + lastLocation.longitude;
+                url += "&radius=500";
+
+                xhttp.open("GET", url, true);
+                xhttp.send();
+            };
+
+            var removeAllProperties = function (properties) {
+                for (var x in properties) {
+                    var id = properties[x];
+                    map.removeHtml(id);
+                }
+            };
+
+            var initZoom = function () {
+                var plusZoomElement = document.createElement("div");
+                plusZoomElement.classList.add("zoom", "font-segoeui-b");
+                plusZoomElement.id = "zoom-plus";
+                plusZoomElement.innerText = "+";
+                document.body.appendChild(plusZoomElement);
+                plusZoomElement.addEventListener("click", function (event) {
+                    var currZoom = map.getCamera().zoom;
+                    map.setCamera({
+                        zoom: currZoom + 1
+                    });
+                });
+
+                var minusZoomElement = document.createElement("div");
+                minusZoomElement.classList.add("zoom", "font-segoeui-b");
+                minusZoomElement.id = "zoom-minus";
+                minusZoomElement.innerText = "-";
+                document.body.appendChild(minusZoomElement);
+                minusZoomElement.addEventListener("click", function (event) {
+                    var currZoom = map.getCamera().zoom;
+                    map.setCamera({
+                        zoom: currZoom - 1
+                    });
+                });
+            };
+
+            var initMap = function () {
+                map = new atlas.Map("map", {
+                    "subscription-key": mapAccountKey,
+                    center: [centerLocation.longitude, centerLocation.latitude],
+                    zoom: 14,
+                    boxZoomInteraction: true,
+                    dragPanInteraction: true
+                });
+
+                map.addEventListener('load', function (e) {
+                    addCenterPin(centerLocation.latitude, centerLocation.longitude);
+                });
+
+                map.addEventListener('mousemove', function (e) {
+                    if (centerPinStartDrag) {
+                        app.getMap().htmlElements[0].setLngLat(e.position);
+
+                        lastLocation.latitude = e.position[1];
+                        lastLocation.longitude = e.position[0];
+                    }
+                });
+            };
+
+            var init = function () {
+                initMap();
+                initZoom();
+            };
+
+            return {
+                init: init,
+                getMap: getMap
+            }
+        })();
+
+    </script>
+</body>
+</html>
