@@ -11,7 +11,7 @@
     <title>Map</title>
 
 
-    <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/css/atlas.min.css?api-version=1.0" type="text/css" />
+    <link href="https://atlas.microsoft.com/sdk/css/atlas.min.css?api-version=1.0" type="text/css" rel="stylesheet" />
 
     <style type="text/css">
         #map {
@@ -206,8 +206,6 @@
 
                             addPropertyPin(x,property);
                         }
-
-
                     }
                 };
 
@@ -268,7 +266,7 @@
 
                 map.addEventListener('mousemove', function (e) {
                     if (centerPinStartDrag) {
-                        app.getMap().htmlElements[0].setLngLat(e.position);
+                        map.htmlElements[0].setLngLat(e.position);
 
                         lastLocation.latitude = e.position[1];
                         lastLocation.longitude = e.position[0];

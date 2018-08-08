@@ -56,11 +56,5 @@ namespace WebApplicationGeospatialSearch.Models
 
         [JsonProperty("id")]
         public string Id { get => this.IdPropertySearch; set => this.IdPropertySearch = value; }
-
-        [JsonProperty("latitude")]
-        public double Latitude { get; set; }
-
-        [JsonProperty("longitude")]
-        public double Longitude { get; set; }
     }
 }

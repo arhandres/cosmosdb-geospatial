@@ -77,7 +77,7 @@ namespace WebApplicationGeospatialSearch
                 new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true })
                 .Where(predicate)
                 .Take(50);//just 50
-
+            
             filters?.ForEach(f => queryable = queryable.Where(f));
 
             IDocumentQuery<T> documentQuery = queryable.AsDocumentQuery();
