@@ -4,6 +4,7 @@ using Microsoft.Azure.Documents.Linq;
 using Microsoft.IdentityModel.Protocols;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -107,6 +108,10 @@ namespace WebApplicationGeospatialSearch
         public static void Initialize()
         {
             client = new DocumentClient(new Uri(Endpoint), Key);
+
+            CreateDatabaseIfNotExistsAsync().Wait();
+            CreateCollectionIfNotExistsAsync().Wait();
+            CreateSpatialIndexPolicy().Wait();
         }
 
         private static async Task CreateDatabaseIfNotExistsAsync()
@@ -124,6 +129,40 @@ namespace WebApplicationGeospatialSearch
             {
                 Id = CollectionId
             }, new RequestOptions { OfferThroughput = 400 });
+        }
+
+        private static async Task CreateSpatialIndexPolicy()
+        {
+            var collectionUri = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
+
+            var result = await client.ReadDocumentCollectionAsync(collectionUri);
+            var collection = result.Resource;
+
+            var hasSpatialIndexPolicy = collection.IndexingPolicy?
+                                                  .IncludedPaths?
+                                                  .FirstOrDefault()?
+                                                  .Indexes?.Any(i => i.Kind == IndexKind.Spatial) ?? false;
+
+            if (!hasSpatialIndexPolicy)
+            {
+                collection.IndexingPolicy = new IndexingPolicy(new SpatialIndex(DataType.Point));
+                await client.ReplaceDocumentCollectionAsync(collection);
+
+                Debug.WriteLine("Waiting for indexing to complete...");
+
+                long indexTransformationProgress = 0;
+                while (indexTransformationProgress < 100)
+                {
+                    ResourceResponse<DocumentCollection> response = await client.ReadDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri("inkaldb", "Properties"));
+                    indexTransformationProgress = response.IndexTransformationProgress;
+
+                    Console.WriteLine(indexTransformationProgress);
+
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                }
+
+                Debug.WriteLine("Done IndexPolicy");
+            }
         }
     }
 
